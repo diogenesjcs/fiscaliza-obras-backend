@@ -13,8 +13,11 @@ const constructionSiteSchema = new mongoose.Schema({
     department: String,
     executioner: String,
     title: String,
+    typeId: String,
     type: String,
+    stateId: String,
     state: String,
+    stateDescrption:String,
     cycleDate: Date
 }, {
     timestamps: true
