@@ -7,51 +7,40 @@ exports.postAddComplaint = (req, res, next) => {
   const coords = [];
   coords[0] = req.body.lng;
   coords[1] = req.body.lat;
-  const query = {
-    lat: coords[1],
-    lng: coords[2]
-  };
-  const update = {
-    expire: new Date()
-  };
-  const options = {
-    upsert: true,
-    new: true,
-    setDefaultsOnInsert: true
-  };
-  Location.findOneAndUpdate(query, update, options, (error, location) => {
-    if (error) return next(error);
-    User.findOne(
-      {
-        email: req.body.email
-      },
-      (err, user) => {
-        if (err) {
-          return next(err);
-        }
-        ConstructionSite.findOne(
-          {
-            email: req.body.constructionSiteId
-          },
-          (err2, constructionSite) => {
-            if (err2) {
-              return next(err);
-            }
-            constructionSite.complaints += 1;
-            constructionSite.save();
-            const complaint = new Complaint({
-              location: location._id,
-              createdBy: user._id,
-              impact: 0,
-              images: [],
-              constructionSite: constructionSite._id
-            });
-            complaint.save();
-          }
-        );
+  User.findOne(
+    {
+      email: req.body.email
+    },
+    (err, user) => {
+      if (err) {
+        return next(err);
       }
-    );
-  });
+      ConstructionSite.findOne(
+        {
+          _id: req.body.constructionSiteId
+        },
+        (err2, constructionSite) => {
+          if (err2) {
+            return next(err);
+          }
+          if (constructionSite.complaints !== null) constructionSite.complaints++;
+          else constructionSite.complaints = 1;
+
+          constructionSite.save();
+          const complaint = new Complaint({
+            lat: coords[1],
+            lng: coords[0],
+            createdBy: user._id,
+            impact: req.body.impact,
+            images: [],
+            constructionSite: constructionSite._id
+          });
+          complaint.save();
+          res.send(complaint);
+        }
+      );
+    }
+  );
 };
 
 exports.getConstructionSites = (req, res) => {
