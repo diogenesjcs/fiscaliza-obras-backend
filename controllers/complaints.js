@@ -61,7 +61,6 @@ exports.getConstructionSites = (req, res) => {
       return err;
     }
     const constructionSitesMap = [];
-
     constructionSites.forEach((constructionSite) => {
       constructionSitesMap.push(constructionSite);
     });
