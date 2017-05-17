@@ -1,6 +1,5 @@
 const passport = require('passport');
 const Complaint = require('../models/Complaint');
-const Location = require('../models/Location');
 const ConstructionSite = require('../models/ConstructionSite');
 const User = require('../models/User');
 
