@@ -7,7 +7,8 @@ const complaintSchema = new mongoose.Schema(
     images: Array,
     createdBy: String,
     impact: Number,
-    constructionSite: String
+    constructionSite: String,
+    description: String
   },
   { timestamps: true }
 );

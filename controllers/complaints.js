@@ -33,6 +33,7 @@ exports.postAddComplaint = (req, res, next) => {
             createdBy: user._id,
             impact: req.body.impact,
             images: [],
+            description: req.body.description,
             constructionSite: constructionSite._id
           });
           complaint.save();
