@@ -58,15 +58,39 @@ exports.getConstructionSites = (req, res) => {
 };
 
 exports.getComplaints = (req, res) => {
-  Complaint.find({}, (err, complaints) => {
-    if (err) {
-      return err;
-    }
-    const complaintsMap = [];
+  if (req.query.email) {
+    User.findOne(
+      {
+        email: req.body.email
+      },
+      (err, user) => {
+        if (err) {
+          return next(err);
+        }
+        Complaint.find({ createdBy: user._id }, (err, complaints) => {
+          if (err) {
+            return err;
+          }
+          const complaintsMap = [];
 
-    complaints.forEach((complaint) => {
-      complaintsMap.push(complaint);
+          complaints.forEach((complaint) => {
+            complaintsMap.push(complaint);
+          });
+          res.send(complaintsMap);
+        });
+      }
+    );
+  } else {
+    Complaint.find({}, (err, complaints) => {
+      if (err) {
+        return err;
+      }
+      const complaintsMap = [];
+
+      complaints.forEach((complaint) => {
+        complaintsMap.push(complaint);
+      });
+      res.send(complaintsMap);
     });
-    res.send(complaintsMap);
-  });
+  }
 };
