@@ -1,6 +1,6 @@
 (function ($) {
     // Start of use strict
-  const latLng = new google.maps.LatLng(-8.0634903,-34.9103391);
+  const latLng = new google.maps.LatLng(-8.0634903, -34.9103391);
   const mapOptions = {
     center: latLng,
     zoom: 13,
@@ -60,9 +60,11 @@
       });
       console.log(point);
       const cityCircle = new google.maps.Circle({
-        center: new google.maps.LatLng(point.lat,point.lng),
+        center: new google.maps.LatLng(point.lat, point.lng),
         radius: point.complaints * 1000,
         fillColor: '#880000',
+        strokeOpacity: 0.3,
+        strokeColor: '#880000',
         map
       });
     });

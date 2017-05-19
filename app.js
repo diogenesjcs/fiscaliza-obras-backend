@@ -20,6 +20,7 @@ const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
 mongoose.Promise = require('bluebird');
+const favicon = require('serve-favicon');
 
 const upload = multer({
   dest: path.join(__dirname, 'uploads')
@@ -99,6 +100,7 @@ app.use((req, res, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use(favicon(`${__dirname}/public/favicon-32x32.png`));
 app.use((req, res, next) => {
   next();
     //   if (req.path === '/api/upload') {
