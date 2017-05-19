@@ -30,7 +30,7 @@ exports.postAddComplaint = (req, res, next) => {
                     lng: coords[0],
                     createdBy: user._id,
                     impact: req.body.impact,
-                    images: [],
+                    images: req.body.images,
                     description: req.body.description,
                     constructionSite: constructionSite._id
                   });
