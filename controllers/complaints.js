@@ -58,7 +58,7 @@ exports.getConstructionSites = (req, res) => {
 exports.getComplaints = (req, res) => {
   if (req.query.email) {
     User.findOne({
-      email: req.body.email
+      email: req.query.email
     },
             (err, user) => {
               if (err) {
@@ -68,12 +68,18 @@ exports.getComplaints = (req, res) => {
                 if (err) {
                   return err;
                 }
-                const complaintsMap = [];
-
-                complaints.forEach((complaint) => {
-                  complaintsMap.push(complaint);
+                const complaintsResult = _.map(complaints, (comp) => {
+                  const model = {
+                    email: null,
+                    profile: null,
+                    _id: null
+                  };
+                  const userResult = _.pick(user, _.keys(model));
+                  const c = JSON.parse(JSON.stringify(comp));
+                  c.createdBy = userResult;
+                  return c;
                 });
-                res.send(complaintsMap);
+                res.send(complaintsResult);
               });
             }
         );
