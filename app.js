@@ -83,6 +83,8 @@ app.use(
       extended: true
     })
 );
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(expressValidator());
 /* app.use(
     session({
@@ -118,7 +120,7 @@ app.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
-/*app.use((req, res, next) => {
+/* app.use((req, res, next) => {
     // After successful login, redirect back to the intended page
   if (!req.user &&
         req.path !== '/login' &&
