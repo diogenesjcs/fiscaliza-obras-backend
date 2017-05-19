@@ -29,6 +29,7 @@ exports.postAddComplaint = (req, res, next) => {
                   constructionSite.complaints += 1;
                   constructionSite.save();
                   const imagesId = [];
+                  console.log(req.body.images);
                   req.body.images.forEach((image) => {
                     imagesId.push(uuidV4());
                   });
