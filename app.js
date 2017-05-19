@@ -80,7 +80,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(expressValidator());
-/* app.use(
+app.use(
     session({
       resave: true,
       saveUninitialized: true,
@@ -91,7 +91,7 @@ app.use(expressValidator());
         clear_interval: 3600
       })
     })
-);*/
+);
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
