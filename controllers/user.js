@@ -95,7 +95,13 @@ exports.postSignup = (req, res, next) => {
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (err) { return next(err); }
     if (existingUser) {
-      return res.send({ msg: 'Account with that email address already exists.' });
+      const model = {
+        email: null,
+        profile: null,
+        _id: null
+      };
+      const userObj = _.pick(existingUser, _.keys(model));
+      return res.send(userObj);
     }
     user.save((err) => {
       if (err) { return next(err); }
@@ -109,7 +115,7 @@ exports.postSignup = (req, res, next) => {
           _id: null
         };
         const userObj = _.pick(user, _.keys(model));
-        res.send(userObj);
+        return res.send(userObj);
       });
     });
   });
