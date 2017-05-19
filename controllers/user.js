@@ -80,8 +80,7 @@ exports.postSignup = (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    req.flash('errors', errors);
-    return res.redirect('/signup');
+    return res.send({ msg: 'Problem with input.' });
   }
 
   const user = new User({
@@ -90,14 +89,12 @@ exports.postSignup = (req, res, next) => {
   });
   user.profile.name = req.body.name || '';
   user.profile.gender = req.body.gender || '';
-  user.profile.location = req.body.location || '';
   user.profile.picture = req.body.picture || '';
 
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (err) { return next(err); }
     if (existingUser) {
-      req.flash('errors', { msg: 'Account with that email address already exists.' });
-      return res.redirect('/signup');
+      return res.send({ msg: 'Account with that email address already exists.' });
     }
     user.save((err) => {
       if (err) { return next(err); }
@@ -105,7 +102,13 @@ exports.postSignup = (req, res, next) => {
         if (err) {
           return next(err);
         }
-        res.redirect('/');
+        const model = {
+          email: null,
+          profile: null,
+          _id: null
+        };
+        const userObj = _.pick(user, _.keys(model));
+        res.send(userObj);
       });
     });
   });
