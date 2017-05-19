@@ -75,8 +75,6 @@ exports.getSignup = (req, res) => {
  */
 exports.postSignup = (req, res, next) => {
   req.assert('email', 'Email is not valid').isEmail();
-  req.assert('password', 'Password must be at least 4 characters long').len(4);
-  req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
   req.sanitize('email').normalizeEmail({ remove_dots: false });
 
   const errors = req.validationErrors();
@@ -88,8 +86,12 @@ exports.postSignup = (req, res, next) => {
 
   const user = new User({
     email: req.body.email,
-    password: req.body.password
+    password: '123456'
   });
+  user.profile.name = req.body.name || '';
+  user.profile.gender = req.body.gender || '';
+  user.profile.location = req.body.location || '';
+  user.profile.picture = req.body.picture || '';
 
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (err) { return next(err); }

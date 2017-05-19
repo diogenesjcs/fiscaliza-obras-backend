@@ -23,9 +23,7 @@ exports.postAddComplaint = (req, res, next) => {
                   if (err2) {
                     return next(err);
                   }
-                  if (constructionSite.complaints !== null) constructionSite.complaints++;
-                  else constructionSite.complaints = 1;
-
+                  constructionSite.complaints += 1;
                   constructionSite.save();
                   const complaint = new Complaint({
                     lat: coords[1],
@@ -99,7 +97,7 @@ exports.getComplaints = (req, res) => {
             _id: null
           };
           const user = _.pick(_.find(resultUsers, u => (u._id.toString() === comp.createdBy)), _.keys(model));
-          let c = JSON.parse(JSON.stringify(comp));
+          const c = JSON.parse(JSON.stringify(comp));
           c.createdBy = user;
           return c;
         });
