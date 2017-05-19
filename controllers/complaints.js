@@ -8,6 +8,12 @@ const fs = require('fs');
 const uuidV4 = require('uuid/v4');
 const path = require('path');
 const resolve = path.resolve;
+const cloudinary = require('cloudinary');
+cloudinary.config({
+  cloud_name: 'dxgnk9alp',
+  api_key: '347832686871243',
+  api_secret: '_UNdgHAJq3Gipu_kxLDjOc48W30'
+});
 
 exports.postAddComplaint = (req, res, next) => {
   const coords = [];
@@ -30,27 +36,29 @@ exports.postAddComplaint = (req, res, next) => {
           constructionSite.complaints += 1;
           constructionSite.save();
           const imagesId = [];
-          _.forEach(JSON.parse(req.body.images), (image) => {
-            imagesId.push(uuidV4());
-          });
-          _.forEach(JSON.parse(req.body.images), (image, index) => {
-            const base64Data = image.replace(/^data:image\/jpeg;base64,/, '');
-            const pathUpload = `${`${resolve('public/imgs')}/${imagesId[index]}`}.jpg`;
-            fs.writeFile(pathUpload, base64Data, 'base64', (err) => {
-              console.log(err);
-            });
-          });
           const complaint = new Complaint({
             lat: coords[1],
             lng: coords[0],
             createdBy: user._id,
             impact: req.body.impact,
-            images: imagesId,
+            images: [],
             description: req.body.description,
             constructionSite: constructionSite._id
           });
-          complaint.save();
-          res.send(complaint);
+          complaint.save((err, c) => {
+            _.forEach(JSON.parse(req.body.images), (image) => {
+              Complaint.findOne({ _id: c._id }, (err, comp) => {
+                if (err) {
+                  return err;
+                }
+                cloudinary.uploader.upload(image, (result) => {
+                  comp.images.push(result.url);
+                  comp.save();
+                });
+              });
+            });
+            res.send(complaint);
+          });
         }
       );
     }
