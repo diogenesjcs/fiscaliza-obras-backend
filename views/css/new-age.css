@@ -16,11 +16,20 @@
   text-transform: uppercase;
   letter-spacing: 2px;
 }
-#map{
+header{
+  background-image: url("../img/fundo.png");
+  background-blend-mode: difference;
+  background-size: cover;
+}
+section>#map{
   height:100%;
   width:100%;
   position:absolute;
-  opacity: 0.25;
+  /*opacity: 0.25;*/
+}
+.map-section{
+  padding:0!important;
+  height: 500px;
 }
 html,
 body {
