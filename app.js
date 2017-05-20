@@ -163,6 +163,7 @@ app.get('/api', apiController.getApi);
 app.get('/api/getConstructionSites', complaintsController.getConstructionSites);
 app.get('/api/getComplaints', complaintsController.getComplaints);
 app.post('/api/addComplaint', complaintsController.postAddComplaint);
+app.post('/api/toggleComplaint', complaintsController.postToggleComplaint);
 
 /**
  * Error Handler.

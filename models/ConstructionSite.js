@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
-const constructionSiteSchema = new mongoose.Schema(
-  {
+const constructionSiteSchema = new mongoose.Schema({
     complaints: Number,
     radius: Number,
     lat: Number,
@@ -20,12 +19,13 @@ const constructionSiteSchema = new mongoose.Schema(
     state: String,
     stateDescrption: String,
     cycleDate: Date
-  },
-  {
+}, {
     timestamps: true
-  }
-);
+});
 
-const ConstructionSite = mongoose.model('ConstructionSite', constructionSiteSchema);
+const ConstructionSite = mongoose.model(
+    'ConstructionSite',
+    constructionSiteSchema
+);
 
 module.exports = ConstructionSite;

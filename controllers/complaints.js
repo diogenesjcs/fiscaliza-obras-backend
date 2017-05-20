@@ -65,6 +65,30 @@ exports.postAddComplaint = (req, res, next) => {
   );
 };
 
+exports.postToggleComplaint = (req, res, next) => {
+  User.findOne({
+    email: req.body.email
+  },
+    (err, user) => {
+      if (err) {
+        return next(err);
+      }
+      Complaint.findOne({ _id: req.body.id }, (err, complaint) => {
+        if (err) {
+          return err;
+        }
+        if (complaint.supportedBy.indexOf(user._id) < 0) {
+          complaint.supportedBy.push(user._id);
+        } else {
+          complaint.supportedBy.remove(user._id);
+        }
+        complaint.save();
+        res.send(complaint);
+      });
+    }
+  );
+};
+
 exports.getConstructionSites = (req, res) => {
   ConstructionSite.find({}, (err, constructionSites) => {
     if (err) {
