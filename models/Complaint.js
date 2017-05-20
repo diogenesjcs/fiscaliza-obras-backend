@@ -8,7 +8,8 @@ const complaintSchema = new mongoose.Schema({
   impact: Number,
   constructionSite: String,
   description: String,
-  supportedBy: Array
+  supportedBy: Array,
+  comments: Array
 }, { timestamps: true });
 
 const Complaint = mongoose.model('Complaint', complaintSchema);

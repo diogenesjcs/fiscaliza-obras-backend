@@ -379,7 +379,7 @@ exports.postForgot = (req, res, next) => {
         req.flash('info', { msg: `An e-mail has been sent to ${user.email} with further instructions.` });
       });
   };
-
+  
   createRandomToken
     .then(setRandomToken)
     .then(sendForgotPasswordEmail)

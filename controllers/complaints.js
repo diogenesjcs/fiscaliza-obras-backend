@@ -26,41 +26,69 @@ exports.postAddComplaint = (req, res, next) => {
       if (err) {
         return next(err);
       }
-      ConstructionSite.findOne({
-        _id: req.body.constructionSiteId
-      },
-        (err2, constructionSite) => {
-          if (err2) {
-            return next(err);
-          }
-          constructionSite.complaints += 1;
-          constructionSite.save();
-          const imagesId = [];
-          const complaint = new Complaint({
-            lat: coords[1],
-            lng: coords[0],
-            createdBy: user._id,
-            impact: req.body.impact,
-            images: [],
-            description: req.body.description,
-            constructionSite: constructionSite._id
-          });
-          complaint.save((err, c) => {
-            _.forEach(JSON.parse(req.body.images), (image) => {
-              Complaint.findOne({ _id: c._id }, (err, comp) => {
-                if (err) {
-                  return err;
-                }
-                cloudinary.uploader.upload(image, (result) => {
-                  comp.images.push(result.url);
-                  comp.save();
-                });
+      console.log(req.body);
+      if (req.body.constructionSiteId === 'user') {
+        const imagesId = [];
+        const complaint = new Complaint({
+          lat: coords[1],
+          lng: coords[0],
+          createdBy: user._id,
+          impact: req.body.impact,
+          images: [],
+          description: req.body.description,
+          constructionSite: `user${uuidV4()}`
+        });
+        complaint.save((err, c) => {
+          _.forEach(JSON.parse(req.body.images), (image) => {
+            Complaint.findOne({ _id: c._id }, (err, comp) => {
+              if (err) {
+                return err;
+              }
+              cloudinary.uploader.upload(image, (result) => {
+                comp.images.push(result.url);
+                comp.save();
               });
             });
-            res.send(complaint);
           });
-        }
-      );
+          res.send(complaint);
+        });
+      } else {
+        ConstructionSite.findOne({
+          _id: req.body.constructionSiteId
+        },
+          (err2, constructionSite) => {
+            if (err2) {
+              return next(err);
+            }
+            constructionSite.complaints += 1;
+            constructionSite.save();
+            const imagesId = [];
+            const complaint = new Complaint({
+              lat: coords[1],
+              lng: coords[0],
+              createdBy: user._id,
+              impact: req.body.impact,
+              images: [],
+              description: req.body.description,
+              constructionSite: constructionSite._id
+            });
+            complaint.save((err, c) => {
+              _.forEach(JSON.parse(req.body.images), (image) => {
+                Complaint.findOne({ _id: c._id }, (err, comp) => {
+                  if (err) {
+                    return err;
+                  }
+                  cloudinary.uploader.upload(image, (result) => {
+                    comp.images.push(result.url);
+                    comp.save();
+                  });
+                });
+              });
+              res.send(complaint);
+            });
+          }
+        );
+      }
     }
   );
 };
@@ -82,6 +110,36 @@ exports.postToggleComplaint = (req, res, next) => {
         } else {
           complaint.supportedBy.remove(user._id);
         }
+        complaint.save();
+        res.send(complaint);
+      });
+    }
+  );
+};
+exports.postAddComment = (req, res, next) => {
+  User.findOne({
+    email: req.body.email
+  },
+    (err, user) => {
+      if (err) {
+        return next(err);
+      }
+      Complaint.findOne({ _id: req.body.id }, (err, complaint) => {
+        if (err) {
+          return err;
+        }
+        const model = {
+          email: null,
+          profile: null,
+          _id: null
+        };
+        const userResult = _.pick(user, _.keys(model));
+        complaint.comments.push(
+          {
+            text: req.body.text,
+            user: userResult,
+            date: Date.now()
+          });
         complaint.save();
         res.send(complaint);
       });
@@ -158,4 +216,33 @@ exports.getComplaints = (req, res) => {
       });
     });
   }
+};
+exports.getUser = (req, res) => {
+  User
+    .findOne({ _id: req.query.id }, (err, user) => {
+      if (user) {
+        const model = {
+          email: null,
+          profile: null,
+          _id: null
+        };
+        const userObj = _.pick(user, _.keys(model));
+        return res.send(userObj);
+      }
+    });
+};
+exports.getUserByEmail = (req, res) => {
+  User
+    .findOne({ email: req.query.email }, (err, user) => {
+      if (user) {
+        const model = {
+          email: null,
+          profile: null,
+          _id: null
+        };
+        const userObj = _.pick(user, _.keys(model));
+        return res.send(userObj);
+      }
+      return err;
+    });
 };
