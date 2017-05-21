@@ -164,6 +164,7 @@ app.get('/api/getConstructionSites', complaintsController.getConstructionSites);
 app.get('/api/getComplaints', complaintsController.getComplaints);
 app.post('/api/addComplaint', complaintsController.postAddComplaint);
 app.post('/api/toggleComplaint', complaintsController.postToggleComplaint);
+app.post('/api/addComment', complaintsController.postAddComment);
 app.get('/api/getUser', complaintsController.getUser);
 app.get('/api/getUserByEmail', complaintsController.getUserByEmail);
 
